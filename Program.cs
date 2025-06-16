@@ -1,143 +1,47 @@
 ﻿using System;
-using System.IO;
-using System.Text; 
+using System.Collections.Generic;
+using System.Globalization;
 
-namespace Baitap1
+namespace BAITAP1_
 {
-   
-    public class DevideByZeroException : Exception
-    {
-        public DevideByZeroException() : base("Lỗi: Chia cho 0. Không thể tính giá trị biểu thức.") { }
-        public DevideByZeroException(string message) : base(message) { }
-        public DevideByZeroException(string message, Exception inner) : base(message, inner) { }
-    }
-
-    public class NotNegativeException : Exception
-    {
-        public NotNegativeException() : base("Lỗi: Giá trị dưới dấu căn nhỏ hơn 0. Không thể tính căn bậc hai của số âm.") { }
-        public NotNegativeException(string message) : base(message) { }
-        public NotNegativeException(string message, Exception inner) : base(message, inner) { }
-    }
-
     internal class Program
     {
-        public static double CalculateH(int x, int y)
+        public static void RandomNum(int num)
         {
-            
-            double numerator = 3 * x + 2 * y;
-            double denominator = 2 * x - y;
-
-            
-            if (denominator == 0)
+            if (num < 0)
             {
-                throw new DevideByZeroException();
+                Console.WriteLine("So luong phan tu lon hon 0.");
+                return;
             }
 
-           
-            double valueInsideSqrt = numerator / denominator;
+            List<int> numbers = new List<int>();
+            Random random = new Random((int)DateTime.Now.Ticks);
 
-            
-            if (valueInsideSqrt < 0)
+            for (int i = 0; i < num; i++)
             {
-                throw new NotNegativeException();
+                int value = random.Next(100);
+                numbers.Add(value);
             }
-
-           
-            return Math.Sqrt(valueInsideSqrt);
+            numbers.Sort();
+            Console.WriteLine("Day so sau khi sap xep tang dan:");
+            foreach (int number in numbers)
+            {
+                Console.WriteLine(number + " ");
+            }
         }
-
         static void Main(string[] args)
         {
-            
-            Console.OutputEncoding = Encoding.UTF8;
+            Console.Write("Nhap so luong phan tu: ");
+            string? input = Console.ReadLine();
 
-            int x = 0;
-            int y = 0;
-            bool validInputX = false;
-            bool validInputY = false;
-
-            
-            while (!validInputX)
+            if (int.TryParse(input, out int n))
             {
-                Console.Write("Nhập số nguyên x: ");
-                string? inputX = Console.ReadLine();
-                if (string.IsNullOrEmpty(inputX))
-                {
-                    Console.WriteLine("Lỗi: Đầu vào không được để trống.");
-                    continue;
-                }
-                try
-                {
-                    x = int.Parse(inputX);
-                    validInputX = true;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Lỗi: Đầu vào không hợp lệ. Vui lòng nhập số nguyên cho x.");
-                }
-                catch (OverflowException)
-                {
-                    Console.WriteLine("Lỗi: Số quá lớn hoặc quá nhỏ. Vui lòng nhập số nguyên hợp lệ cho x.");
-                }
+                RandomNum(n);
             }
-
-            
-            while (!validInputY)
+            else
             {
-                Console.Write("Nhập số nguyên y: ");
-                string? inputY = Console.ReadLine();
-                if (string.IsNullOrEmpty(inputY))
-                {
-                    Console.WriteLine("Lỗi: Đầu vào không được để trống.");
-                    continue;
-                }
-                try
-                {
-                    y = int.Parse(inputY);
-                    validInputY = true;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Lỗi: Đầu vào không hợp lệ. Vui lòng nhập số nguyên cho y.");
-                }
-                catch (OverflowException)
-                {
-                    Console.WriteLine("Lỗi: Số quá lớn hoặc quá nhỏ. Vui lòng nhập số nguyên hợp lệ cho y.");
-                }
+                Console.WriteLine("Nhap sai! Vui long nhap mot so nguyen.");
             }
-
-            double? resultH = null;
-
-            try
-            {
-                resultH = CalculateH(x, y);
-                Console.WriteLine($"Giá trị của H = {resultH}");
-
-                
-                try
-                {
-                    File.WriteAllText("input.txt", $"x = {x}\ny = {y}\nH = {resultH}\n", Encoding.UTF8);
-                    Console.WriteLine("Kết quả đã được lưu vào file input.txt");
-                }
-                catch (IOException ex)
-                {
-                    Console.WriteLine($"Lỗi khi ghi file input.txt: {ex.Message}");
-                }
-            }
-            catch (DevideByZeroException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (NotNegativeException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Đã xảy ra lỗi không mong muốn: {ex.Message}");
-            }
-
-            Console.ReadKey();
         }
     }
 }
